@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Tracker</title>
+    <style>
+      body { font-family: -apple-system, system-ui, Arial; margin: 12px; width: 320px; }
+      button { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
+      #status { margin-top: 8px; color: #555; }
+      .row { display: flex; gap: 8px; align-items: center; }
+      .hidden { display: none; }
+      pre { white-space: pre-wrap; word-break: break-word; background: #f7f7f9; padding: 8px; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <h3>Job Application Tracker</h3>
+    <div class="row">
+      <button id="signin">Sign in with Google</button>
+      <button id="signout" class="hidden">Sign out</button>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <button id="fetch" class="hidden">Fetch Emails</button>
+      <button id="next" class="hidden">Next</button>
+      <button id="openDashboard" class="hidden">Open Dashboard</button>
+    </div>
+    <div id="status"></div>
+    <div id="output" class="hidden"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>
+
+
