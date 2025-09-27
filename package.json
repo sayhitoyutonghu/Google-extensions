@@ -1,0 +1,10 @@
+{
+  "name": "job-application-tracker-chrome",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Build helper for generating manifest.json (dev/prod)",
+  "scripts": {
+    "build:dev": "node scripts/build-manifest.js dev",
+    "build:prod": "node scripts/build-manifest.js prod"
+  }
+}

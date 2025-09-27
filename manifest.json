@@ -1,0 +1,43 @@
+﻿{
+    "manifest_version":  3,
+    "name":  "Job Application Tracker (Chrome)",
+    "version":  "0.1.0",
+    "description":  "Track job applications from Gmail in your browser.",
+    "action":  {
+                   "default_popup":  "popup.html",
+                   "default_title":  "Job Tracker"
+               },
+    "web_accessible_resources":  [
+                                     {
+                                         "resources":  [
+                                                           "dashboard.html",
+                                                           "dashboard.js",
+                                                           "parsers.js"
+                                                       ],
+                                         "matches":  [
+                                                         "\u003call_urls\u003e"
+                                                     ]
+                                     }
+                                 ],
+    "permissions":  [
+                        "identity",
+                        "storage"
+                    ],
+    "oauth2":  {
+                   "client_id":  "799523010151-rrvs5q0dmdk9qmpje640fvg3s3d35cb7.apps.googleusercontent.com",
+                   "scopes":  [
+                                  "https://www.googleapis.com/auth/gmail.readonly",
+                                  "openid",
+                                  "email",
+                                  "profile"
+                              ]
+               },
+    "host_permissions":  [
+                             "https://accounts.google.com/*",
+                             "https://oauth2.googleapis.com/*",
+                             "https://www.googleapis.com/*"
+                         ],
+    "background":  {
+                       "service_worker":  "service-worker.js"
+                   }
+}

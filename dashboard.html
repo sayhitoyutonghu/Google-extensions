@@ -1,0 +1,505 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Application Dashboard</title>
+    <style>
+      body { 
+        font-family: -apple-system, system-ui, Arial; 
+        margin: 0; 
+        background: linear-gradient(135deg, #f0f9ff 0%, #fefce8 100%); 
+        min-height: 100vh;
+      }
+      
+      header { 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 16px 20px; 
+        position: sticky; 
+        top: 0; 
+        backdrop-filter: blur(10px); 
+        background: rgba(255,255,255,0.6); 
+        border-bottom: 1px solid rgba(255,255,255,0.4); 
+        z-index: 10; 
+      }
+      
+      .title { font-weight: 600; font-size: 18px; }
+      
+      .controls { 
+        display: flex; 
+        gap: 8px; 
+        align-items: center; 
+      }
+      
+      .container { padding: 18px; }
+      
+      /* Stats Header */
+      .stats-header {
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow: 0 10px 30px rgba(24,94,224,0.05);
+      }
+      
+      .stats-row {
+        display: flex;
+        gap: 40px;
+        align-items: center;
+      }
+      
+      .stat-item {
+        text-align: center;
+      }
+      
+      .stat-label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 4px;
+      }
+      
+      .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+      }
+      
+      .stat-value.interview-rate { color: #f97316; }
+      .stat-value.offer-rate { color: #22c55e; }
+      .stat-value.total { color: #3b82f6; }
+      
+      /* Filters Section */
+      .filters-section {
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow: 0 10px 30px rgba(24,94,224,0.05);
+      }
+      
+      .search-box {
+        position: relative;
+        margin-bottom: 12px;
+      }
+      
+      .search-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.8);
+        font-size: 14px;
+        outline: none;
+      }
+      
+      .clear-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 18px;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+      }
+      
+      .filter-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      
+      .filter-select {
+        padding: 8px 12px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.8);
+        font-size: 14px;
+        min-width: 120px;
+      }
+      
+      /* Kanban Board */
+      .kanban-board {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 16px;
+        padding-bottom: 20px;
+        width: 100%;
+      }
+      
+      .kanban-column {
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow: 0 10px 30px rgba(24,94,224,0.05);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+      }
+      
+      .column-header {
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .column-header.applied { background: #3b82f6; color: white; }
+      .column-header.interview { background: #f97316; color: white; }
+      .column-header.offer { background: #8b5cf6; color: white; }
+      .column-header.rejected { background: #ef4444; color: white; }
+      .column-header.viewed { background: #17a2b8; color: white; }
+      .column-header.ghost { background: #6b7280; color: white; }
+      
+      .column-count {
+        background: rgba(255,255,255,0.2);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      
+      .column-content {
+        padding: 16px;
+        min-height: 200px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      
+      /* Job Cards */
+      .job-card {
+        background: rgba(255,255,255,0.8);
+        border: 1px solid rgba(0,0,0,0.05);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+      
+      .job-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border-color: rgba(59,130,246,0.3);
+      }
+      
+      .job-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1f2937;
+        margin-bottom: 4px;
+        line-height: 1.3;
+      }
+      
+      .job-company {
+        font-size: 13px;
+        color: #6b7280;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      
+      .job-date {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 8px;
+      }
+      
+      .job-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+      }
+      
+      .job-link {
+        color: #3b82f6;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      
+      .job-menu {
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+      }
+      
+      .job-menu:hover {
+        background: rgba(0,0,0,0.05);
+      }
+      
+      /* Status Badges */
+      .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .status-badge.applied { background: #dbeafe; color: #1e40af; }
+      .status-badge.viewed { background: #cffafe; color: #0e7490; }
+      .status-badge.interview { background: #fed7aa; color: #9a3412; }
+      .status-badge.offer { background: #e0e7ff; color: #3730a3; }
+      .status-badge.rejected { background: #fee2e2; color: #991b1b; }
+      .status-badge.ghost { background: #f3f4f6; color: #374151; }
+      
+      /* No Data Message */
+      .no-data-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+        font-size: 14px;
+        display: none;
+      }
+      
+      /* Modal */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+      }
+      
+      .modal.hidden {
+        display: none;
+      }
+      
+      .modal-content {
+        background: #fff;
+        width: 760px;
+        max-width: 96vw;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      }
+      
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .modal-title {
+        font-weight: 700;
+        font-size: 16px;
+      }
+      
+      .modal-close {
+        background: #f3f4f6;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      
+      .modal-body {
+        padding: 20px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      
+      /* Loading */
+      .loading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #6b7280;
+        font-size: 14px;
+      }
+      
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(0,0,0,0.1);
+        border-top-color: #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .kanban-board {
+          flex-direction: column;
+        }
+        
+        .kanban-column {
+          min-width: 100%;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .stats-row {
+          flex-direction: column;
+          gap: 16px;
+        }
+        
+        .filter-row {
+          flex-direction: column;
+        }
+        
+        .filter-select {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">Job Application Dashboard</div>
+      <div class="controls">
+        <button id="sync">Sync Gmail</button>
+        <div id="loading" class="loading hidden">
+          <div class="spinner"></div>
+          <span id="progressText">Syncing…</span>
+        </div>
+      </div>
+    </header>
+    
+    <div class="container">
+      <!-- Header Stats -->
+      <div class="stats-header">
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-label">Total Applied</div>
+            <div class="stat-value total" id="totalApplied">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="filters-section">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search jobs..." class="search-input">
+          <button id="clearSearch" class="clear-btn">×</button>
+        </div>
+        <div class="filter-row">
+          <select id="companyFilter" class="filter-select">
+            <option value="">All Companies</option>
+          </select>
+          <select id="dateFilter" class="filter-select">
+            <option value="">All Time</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+          </select>
+          <select id="sortBy" class="filter-select">
+            <option value="newest">Newest to Oldest</option>
+            <option value="oldest">Oldest to Newest</option>
+            <option value="company">Company A-Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Kanban Board -->
+      <div class="kanban-board">
+        <div class="kanban-column" data-status="applied">
+          <div class="column-header applied">
+            <span class="column-title">APPLIED</span>
+            <span class="column-count" id="appliedCount">0</span>
+          </div>
+          <div class="column-content" id="appliedColumn">
+            <!-- Job cards will be inserted here -->
+          </div>
+        </div>
+
+        <div class="kanban-column" data-status="viewed">
+          <div class="column-header viewed">
+            <span class="column-title">VIEWED</span>
+            <span class="column-count" id="viewedCount">0</span>
+          </div>
+          <div class="column-content" id="viewedColumn">
+            <!-- Job cards will be inserted here -->
+          </div>
+        </div>
+
+        <div class="kanban-column" data-status="interview">
+          <div class="column-header interview">
+            <span class="column-title">INTERVIEW</span>
+            <span class="column-count" id="interviewCount">0</span>
+          </div>
+          <div class="column-content" id="interviewColumn">
+            <!-- Job cards will be inserted here -->
+          </div>
+        </div>
+
+        <div class="kanban-column" data-status="offer">
+          <div class="column-header offer">
+            <span class="column-title">OFFER</span>
+            <span class="column-count" id="offerCount">0</span>
+          </div>
+          <div class="column-content" id="offerColumn">
+            <!-- Job cards will be inserted here -->
+          </div>
+        </div>
+
+        <div class="kanban-column" data-status="rejected">
+          <div class="column-header rejected">
+            <span class="column-title">REJECTED</span>
+            <span class="column-count" id="rejectedCount">0</span>
+          </div>
+          <div class="column-content" id="rejectedColumn">
+            <!-- Job cards will be inserted here -->
+          </div>
+        </div>
+
+        <div class="kanban-column" data-status="ghost">
+          <div class="column-header ghost">
+            <span class="column-title">GHOST</span>
+            <span class="column-count" id="ghostCount">0</span>
+          </div>
+          <div class="column-content" id="ghostColumn">
+            <!-- Job cards will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <div id="noData" class="no-data-message">No applications found. Sync Gmail to get started!</div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="modalTitle">Application Detail</div>
+          <button class="modal-close" id="modalClose">Close</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Modal content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <script src="chart-lite.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>
