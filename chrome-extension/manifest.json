@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Job Application Tracker (Chrome)",
+  "name": "Job Application Tracker (Dev)",
   "version": "0.1.0",
   "description": "Track job applications from Gmail in your browser.",
   "action": {
@@ -14,7 +14,9 @@
         "dashboard.js",
         "parsers.js"
       ],
-      "matches": ["<all_urls>"]
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "permissions": [
@@ -39,5 +41,3 @@
     "service_worker": "service-worker.js"
   }
 }
-
-
