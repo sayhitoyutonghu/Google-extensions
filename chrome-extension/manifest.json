@@ -12,7 +12,8 @@
       "resources": [
         "dashboard.html",
         "dashboard.js",
-        "parsers.js"
+        "parsers.js",
+        "export-integration.js"
       ],
       "matches": [
         "<all_urls>"
