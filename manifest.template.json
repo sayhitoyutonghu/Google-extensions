@@ -34,7 +34,8 @@
   "host_permissions": [
     "https://accounts.google.com/*",
     "https://oauth2.googleapis.com/*",
-    "https://www.googleapis.com/*"
+    "https://www.googleapis.com/*",
+    "https://total-job-tracker.vercel.app/*"
   ],
   "background": {
     "service_worker": "service-worker.js"
