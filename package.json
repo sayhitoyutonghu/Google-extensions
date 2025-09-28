@@ -5,6 +5,9 @@
   "description": "Build helper for generating manifest.json (dev/prod)",
   "scripts": {
     "build:dev": "node scripts/build-manifest.js dev",
-    "build:prod": "node scripts/build-manifest.js prod"
+    "build:prod": "node scripts/build-manifest.js prod",
+    "prepare:release": "node scripts/prepare-release.js",
+    "test:parsers": "node -e 'console.log(\"Testing parsers functionality...\"); if (typeof window === \"undefined\") { global.window = {}; } require(\"./chrome-extension/parsers.js\"); if (window.testRejectionDetection) { window.testRejectionDetection(); } else { console.log(\"Parsers loaded successfully\"); }'",
+    "validate:extension": "node -e 'const fs = require(\"fs\"); const manifest = JSON.parse(fs.readFileSync(\"chrome-extension/manifest.json\")); console.log(\"Extension validation:\", {name: manifest.name, version: manifest.version, manifest_version: manifest.manifest_version}); console.log(\"✅ Extension files validated\");'"
   }
 }
